@@ -1,5 +1,12 @@
 [
-  { "id": 1, "text": "Learn Next.js 15", "completed": false },
-  { "id": 2, "text": "Master Node.js", "completed": true },
-  { "id": 3, "text": "Learn MongoDB", "completed": true }
+  {
+    "id": "651464b4-443b-4b3d-bba0-ab9a49928b17",
+    "text": "New Edited Post",
+    "completed": false
+  },
+  {
+    "id": "8b200209-8984-4348-bb15-51e10b1232d1",
+    "text": "Practiced valo",
+    "completed": false
+  }
 ]
