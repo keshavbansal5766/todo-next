@@ -28,7 +28,7 @@ const TodoForm = ({addTodo}) => {
         disabled={!input.trim()}
         className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-md bg-primary disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90 transition-opacity"
       >
-        <PlusIcon className="h-4 w-4" />
+        <PlusIcon className="h-4 w-4 text-white" />
       </button>
     </form>
   );
