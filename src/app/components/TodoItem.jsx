@@ -1,19 +1,36 @@
 "use client";
-import { PencilIcon } from "lucide-react";
-import { X } from "lucide-react";
-import { TrashIcon } from "lucide-react";
-import { Check } from "lucide-react";
-import React, { useState } from "react";
+
+import { useState } from "react";
+import { PencilIcon, X, TrashIcon, Check } from "lucide-react";
 
 const TodoItem = ({ todo, deleteTodo, toggleTodo, updateTodo }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState(todo.text);
 
-  const handleEdit = () => {};
+  const handleEdit = () => {
+    setIsEditing(true);
+    setEditText(todo.text);
+  };
 
-  const handleSave = () => {};
+  const handleSave = () => {
+    if (editText.trim()) {
+      updateTodo(todo.id, editText.trim());
+      setIsEditing(false);
+    }
+  };
 
-  const handleCancel = () => {};
+  const handleCancel = () => {
+    setIsEditing(false);
+    setEditText(todo.text);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSave();
+    } else if (e.key === "Escape") {
+      handleCancel();
+    }
+  };
 
   return (
     <div
@@ -24,17 +41,24 @@ const TodoItem = ({ todo, deleteTodo, toggleTodo, updateTodo }) => {
       <div className="flex items-center gap-3">
         <button
           onClick={() => toggleTodo(todo.id)}
-          className="flex justify-center items-center flex-shrink-0 w-5 h-5 rounded-md border transition-colors"
+          className={`flex justify-center items-center flex-shrink-0 w-5 h-5 rounded-md border transition-colors ${
+            todo.completed
+              ? "bg-primary border-primary"
+              : "border-muted-foreground hover:border-primary"
+          }`}
         >
-          {todo.completed && <Check className="w-4 h-4" />}
+          {todo.completed && (
+            <Check className="w-4 h-4 text-primary-foreground " />
+          )}
         </button>
         {isEditing ? (
           <div className="flex-1">
             <input
+              type="text"
               value={editText}
               onChange={(e) => setEditText(e.target.value)}
               onKeyDown={handleKeyDown}
-              type="text"
+              autoFocus
               className="w-full p-0 bg-transparent border-0 border-b border-primary focus:outline-none focus:ring-0"
             />
           </div>

@@ -3,7 +3,7 @@
 import { PlusIcon } from "lucide-react";
 import { useState } from "react";
 
-const TodoForm = ({addTodo}) => {
+const TodoForm = ({ addTodo }) => {
   const [input, setInput] = useState("");
 
   const handleSubmit = (e) => {
@@ -26,9 +26,9 @@ const TodoForm = ({addTodo}) => {
       <button
         type="submit"
         disabled={!input.trim()}
-        className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-md bg-primary disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90 transition-opacity"
+        className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-md bg-primary disabled:opacity-50 text-primary-foreground disabled:cursor-not-allowed hover:opacity-90 transition-opacity"
       >
-        <PlusIcon className="h-4 w-4 text-white" />
+        <PlusIcon className="h-4 w-4" />
       </button>
     </form>
   );
