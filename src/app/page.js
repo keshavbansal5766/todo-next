@@ -41,7 +41,6 @@ export default function Home() {
   };
 
   const deleteTodo = async (id) => {
-    
     setTodos((prev) => prev.filter((todo) => todo.id !== id));
 
     try {
@@ -51,11 +50,11 @@ export default function Home() {
 
       if (!response.ok) {
         console.error("Failed to delete. Refetching...");
-        fetchTodos(); 
+        fetchTodos();
       }
     } catch (error) {
       console.error("Delete failed:", error);
-      fetchTodos(); 
+      fetchTodos();
     }
   };
 
@@ -78,7 +77,7 @@ export default function Home() {
 
       if (!response.ok) {
         console.error("Failed to toggle todo on server. Rolling back.");
-        fetchTodos(); 
+        fetchTodos();
       }
     } catch (err) {
       console.error("Toggle error:", err);
