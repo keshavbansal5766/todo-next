@@ -1,44 +1,115 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Header from "./components/Header";
 import TodoForm from "./components/TodoForm";
 import TodoList from "./components/TodoList";
 
-// const todosData = [
-//   { id: 1, text: "Learn Next.js 15", completed: false },
-//   { id: 2, text: "Master Node.js", completed: true },
-//   { id: 3, text: "Learn MongoDB", completed: true },
-// ];
-
 export default function Home() {
   const [todos, setTodos] = useState([]);
 
-  const addTodo = (text) => {
-    const newTodo = {
-      id: crypto.randomUUID(),
-      text,
-      completed: false,
-    };
-    setTodos([newTodo, ...todos]);
+  const fetchTodos = async () => {
+    try {
+      const response = await fetch("/todos");
+      const todosData = await response.json();
+
+      if (Array.isArray(todosData)) {
+        setTodos(todosData.slice().reverse());
+      } else {
+        throw new Error("Invalid todos format");
+      }
+    } catch (error) {
+      console.error("Failed to fetch todos:", error);
+    }
   };
 
-  const deleteTodo = (id) => {
-    setTodos(todos.filter((todo) => todo.id !== id));
+  useEffect(() => {
+    fetchTodos();
+  }, []);
+
+  const addTodo = async (text) => {
+    const response = await fetch("/todos", {
+      method: "POST",
+      body: JSON.stringify({ text }),
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (!response.ok) return;
+
+    const newTodo = await response.json();
+    setTodos((prevTodos) => [newTodo, ...prevTodos]);
   };
 
-  const toggleTodo = (id) => {
-    setTodos(
-      todos.map((todo) =>
+  const deleteTodo = async (id) => {
+    
+    setTodos((prev) => prev.filter((todo) => todo.id !== id));
+
+    try {
+      const response = await fetch(`/todos/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        console.error("Failed to delete. Refetching...");
+        fetchTodos(); 
+      }
+    } catch (error) {
+      console.error("Delete failed:", error);
+      fetchTodos(); 
+    }
+  };
+
+  const toggleTodo = async (id) => {
+    const todo = todos.find((todo) => todo.id === id);
+    if (!todo) return;
+
+    setTodos((prev) =>
+      prev.map((todo) =>
         todo.id === id ? { ...todo, completed: !todo.completed } : todo
       )
     );
+
+    try {
+      const response = await fetch(`/todos/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ completed: !todo.completed }),
+      });
+
+      if (!response.ok) {
+        console.error("Failed to toggle todo on server. Rolling back.");
+        fetchTodos(); 
+      }
+    } catch (err) {
+      console.error("Toggle error:", err);
+      fetchTodos();
+    }
   };
 
-  const updateTodo = (id, newText) => {
-    setTodos(
-      todos.map((todo) => (todo.id === id ? { ...todo, text: newText } : todo))
+  const updateTodo = async (id, newText) => {
+    const oldTodo = todos.find((todo) => todo.id === id);
+
+    setTodos((prev) =>
+      prev.map((todo) => (todo.id === id ? { ...todo, text: newText } : todo))
     );
+
+    try {
+      const response = await fetch(`/todos/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: newText }),
+      });
+
+      if (!response.ok) {
+        console.error("Failed to toggle todo on server. Rolling back.");
+        setTodos((prev) =>
+          prev.map((todo) => (todo.id === id ? oldTodo : todo))
+        );
+      }
+    } catch (err) {
+      console.error("Toggle error:", err);
+      setTodos((prev) => prev.map((todo) => (todo.id === id ? oldTodo : todo)));
+    }
   };
 
   return (

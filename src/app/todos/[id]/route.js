@@ -29,6 +29,9 @@ export async function PUT(request, context) {
   }
 
   const findTodoIndex = todosData.findIndex((item) => item.id === id);
+  if (findTodoIndex === -1) {
+    return Response.json({ error: "Todo not found" }, { status: 404 });
+  }
   const findTodo = todosData[findTodoIndex];
 
   const editedTodo = {
@@ -63,7 +66,7 @@ export async function DELETE(_, context) {
   if (findTodoIndex >= 0) {
     todosData.splice(findTodoIndex, 1);
     await writeFile("todos.json", JSON.stringify(todosData, null, 2));
-    return Response.json({ message: "Todo deleted" }, { status: 204 });
+    return new Response(null, { status: 204 });
   } else {
     return Response.json(
       { error: "Todo not found" },

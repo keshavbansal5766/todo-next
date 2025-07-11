@@ -1,9 +1,13 @@
-import { writeFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 import todosData from "../../../todos";
+import { connectDB } from "../lib/connectDB";
 
-export async function GET(req) {
-  // console.log(req);
-  return Response.json(todosData);
+export async function GET() {
+  await connectDB();
+
+  const todoJSONString = await readFile("./todos.json", "utf-8");
+  const todos = JSON.parse(todoJSONString);
+  return Response.json(todos);
 }
 
 export async function POST(request) {
