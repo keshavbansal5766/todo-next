@@ -10,7 +10,7 @@ export default function Home() {
 
   const fetchTodos = async () => {
     try {
-      const response = await fetch("/todos");
+      const response = await fetch("/api/todos");
       const todosData = await response.json();
 
       if (Array.isArray(todosData)) {
@@ -28,7 +28,7 @@ export default function Home() {
   }, []);
 
   const addTodo = async (text) => {
-    const response = await fetch("/todos", {
+    const response = await fetch("/api/todos", {
       method: "POST",
       body: JSON.stringify({ text }),
       headers: { "Content-Type": "application/json" },
@@ -44,7 +44,7 @@ export default function Home() {
     setTodos((prev) => prev.filter((todo) => todo.id !== id));
 
     try {
-      const response = await fetch(`/todos/${id}`, {
+      const response = await fetch(`/api/todos/${id}`, {
         method: "DELETE",
       });
 
@@ -69,7 +69,7 @@ export default function Home() {
     );
 
     try {
-      const response = await fetch(`/todos/${id}`, {
+      const response = await fetch(`/api/todos/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ completed: !todo.completed }),
@@ -93,7 +93,7 @@ export default function Home() {
     );
 
     try {
-      const response = await fetch(`/todos/${id}`, {
+      const response = await fetch(`/api/todos/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text: newText }),

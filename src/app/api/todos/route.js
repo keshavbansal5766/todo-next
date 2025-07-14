@@ -1,5 +1,5 @@
-import { connectDB } from "../lib/connectDB";
-import Todo from "../../../models/todoModel";
+import { connectDB } from "../../lib/connectDB";
+import Todo from "../../../../models/todoModel";
 
 export async function GET() {
   await connectDB();
