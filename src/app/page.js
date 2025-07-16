@@ -1,22 +1,29 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import Header from "./components/Header";
 import TodoForm from "./components/TodoForm";
 import TodoList from "./components/TodoList";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [todos, setTodos] = useState([]);
+  const router = useRouter();
 
   const fetchTodos = async () => {
     try {
       const response = await fetch("/api/todos");
       const todosData = await response.json();
 
-      if (Array.isArray(todosData)) {
-        setTodos(todosData.slice().reverse());
-      } else {
-        throw new Error("Invalid todos format");
+      if (response.status === 401) {
+        return router.push("/login");
+      }
+
+      if (!todosData.error) {
+        if (Array.isArray(todosData)) {
+          setTodos(todosData.slice().reverse());
+        } else {
+          throw new Error("Invalid todos format");
+        }
       }
     } catch (error) {
       console.error("Failed to fetch todos:", error);

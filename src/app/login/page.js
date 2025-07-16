@@ -11,8 +11,19 @@ export default function LoginPage() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    console.log("Logging in:", { email, password });
-    router.push("/dashboard");
+    const response = await fetch("/api/login", {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+    });
+    const data = await response.json();
+    if (response.status === 401) {
+      return router.push("/login");
+    }
+    if (!data.error) {
+      return router.push("/");
+    }
+
+    console.log(data);
   };
 
   return (
@@ -51,6 +62,7 @@ export default function LoginPage() {
           </div>
           <button
             type="submit"
+            onClick={handleLogin}
             className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-2 rounded-md font-medium hover:opacity-90"
           >
             Login

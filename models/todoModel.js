@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const Todo =
   mongoose.models.Todo ||
@@ -12,6 +12,10 @@ const Todo =
       default: false,
       required: true,
     },
+    userId: {
+      type: Schema.Types.ObjectId,
+      required: true,
+    }
   });
 
 export default Todo;
