@@ -1,6 +1,8 @@
 import { connectDB } from "@/app/lib/connectDB";
 import User from "../../../../models/userModel";
 import { cookies } from "next/headers";
+import { createHmac } from "crypto";
+import { signCookie } from "@/app/lib/auth";
 
 export async function POST(request) {
   await connectDB();
@@ -12,7 +14,8 @@ export async function POST(request) {
     if (!user || user.password !== password) {
       return Response.json({ error: "Invalid Credentials!" }, { status: 400 });
     }
-    cookieStore.set("userId", user.id, {
+
+    cookieStore.set("userId", signCookie(user.id), {
       httpOnly: true,
       maxAge: 60 * 60 * 24,
     });
