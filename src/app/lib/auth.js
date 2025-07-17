@@ -1,6 +1,7 @@
 import User from "../../../models/userModel";
 import { cookies } from "next/headers";
 import { createHmac } from "crypto";
+import Session from "../../../models/sessionModel";
 
 export async function getLoggedInUser() {
   const cookieStore = await cookies();
@@ -15,16 +16,22 @@ export async function getLoggedInUser() {
     return errorResponse;
   }
 
-  const userId = verifyCookie(cookie);
+  const sessionId = verifyCookie(cookie);
 
-  if (!userId) {
+  if (!sessionId) {
     return errorResponse;
   }
 
-  const user = await User.findById(userId);
+  const session = await Session.findById(sessionId);
+  if (!session) {
+    return errorResponse;
+  }
+
+  const user = await User.findById(session.userId);
   if (!user) {
     return errorResponse;
   }
+
   return user;
 }
 
