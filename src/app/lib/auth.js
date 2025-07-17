@@ -27,7 +27,7 @@ export async function getLoggedInUser() {
     return errorResponse;
   }
 
-  const user = await User.findById(session.userId);
+  const user = await User.findById(session.userId).select("-password -__v");
   if (!user) {
     return errorResponse;
   }

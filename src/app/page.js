@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Header from "./components/Header";
 import TodoForm from "./components/TodoForm";
 import TodoList from "./components/TodoList";
@@ -8,6 +8,34 @@ import { useRouter } from "next/navigation";
 export default function Home() {
   const [todos, setTodos] = useState([]);
   const router = useRouter();
+  const [user, setUser] = useState({
+    name: "",
+    email: "",
+  });
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const menuRef = useRef(null);
+
+  const fetchUser = async () => {
+    const response = await fetch("/api/user");
+    const data = await response.json();
+    if (response.status === 401) {
+      return router.push("/login");
+    }
+    if (!data.error) {
+      setUser(data);
+    }
+  };
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setShowUserMenu(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const fetchTodos = async () => {
     try {
@@ -31,6 +59,7 @@ export default function Home() {
   };
 
   useEffect(() => {
+    fetchUser();
     fetchTodos();
   }, []);
 
@@ -121,7 +150,12 @@ export default function Home() {
   return (
     <div className="min-h-screen py-8 px-4 flex items-center flex-col sm:px-6">
       <div className="w-full max-w-lg">
-        <Header />
+        <Header
+          user={user}
+          showUserMenu={showUserMenu}
+          setShowUserMenu={setShowUserMenu}
+          menuRef={menuRef}
+        />
         <TodoForm addTodo={addTodo} />
         <main className="mt-6">
           <TodoList
