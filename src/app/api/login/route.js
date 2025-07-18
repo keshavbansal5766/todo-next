@@ -18,7 +18,7 @@ export async function POST(request) {
     const session = await Session.create({ userId: user._id });
     console.log(session.id);
 
-    cookieStore.set("userId", signCookie(session.id), {
+    cookieStore.set("sId", signCookie(session.id), {
       httpOnly: true,
       maxAge: 60 * 60 * 24,
     });

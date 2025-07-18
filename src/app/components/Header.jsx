@@ -5,9 +5,23 @@ import { useTheme } from "next-themes";
 import { SunIcon } from "lucide-react";
 import { MoonIcon } from "lucide-react";
 import { UserIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const Header = ({ user, showUserMenu, setShowUserMenu, menuRef }) => {
   const { theme = "dark", setTheme } = useTheme();
+  const router = useRouter();
+
+  const handleLogOut = async () => {
+    const response = await fetch("/api/logout", {
+      method: "POST",
+    });
+
+    if (response.status === 204) {
+      
+      router.push("/login");
+    }
+  };
+
   return (
     <header className="mb-8 flex justify-between items-center">
       <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-500 to-cyan-600">
@@ -43,9 +57,7 @@ const Header = ({ user, showUserMenu, setShowUserMenu, menuRef }) => {
                 {user.email}
               </div>
               <button
-                onClick={() => {
-                  console.log("Logging out");
-                }}
+                onClick={handleLogOut}
                 className="w-full text-left text-red-500 hover:underline text-sm cursor-pointer"
               >
                 Logout

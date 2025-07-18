@@ -10,7 +10,7 @@ export async function getLoggedInUser() {
     { status: 401 }
   );
 
-  const cookie = cookieStore.get("userId")?.value;
+  const cookie = cookieStore.get("sId")?.value;
 
   if (!cookie) {
     return errorResponse;
@@ -41,6 +41,12 @@ export function signCookie(cookie) {
     .digest("hex");
 
   return `${cookie}.${signature}`;
+}
+
+export async function getUserSessionId() {
+  const cookieStore = await cookies();
+  const cookie = cookieStore.get("sId")?.value;
+  return verifyCookie(cookie);
 }
 
 export function verifyCookie(signedCookie) {
