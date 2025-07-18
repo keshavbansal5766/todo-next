@@ -50,7 +50,7 @@ export async function getUserSessionId() {
 }
 
 export function verifyCookie(signedCookie) {
-  const [cookie, signatureFromCookie] = signedCookie.split(".");
+  const [cookie, signatureFromCookie] = signedCookie?.split(".");
   const signature = signCookie(cookie).split(".")[1];
 
   if (signature === signatureFromCookie) {
